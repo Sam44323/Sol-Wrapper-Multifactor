@@ -2,6 +2,7 @@ pragma solidity ^0.8.9;
 
 contract Escrow{
   address public escrowOwner; // deployer of the contract
+  mapping(address => uint) public deposits; // deposits of each user
   
   event Deposit(address from, uint amount);
   event Withdraw(address from, uint amount);
@@ -12,6 +13,7 @@ contract Escrow{
   // receive native contract for funds (default)
   receive() external payable{
     emit Withdraw(msg.sender, address(this).balance);
+    deposits[msg.sender] += msg.value;
   }
 
   // withdraw function (admin-only and destructible post withdraw)
