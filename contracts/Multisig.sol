@@ -28,6 +28,21 @@ contract Multisig {
     Transaction[] public transactions;
     mapping(uint => mapping(address => bool)) public approvals;
 
+    constructor(address[] memory _owners, uint _txApprovalRequired) {
+        require(_owners.length > 0, "owners required");
+        require(
+            _txApprovalRequired > 0 && _txApprovalRequired <= _owners.length,
+            "invalid tx approval owners!"
+        );
+        for (uint i = 0; i < owners.length; i++) {
+            require(!isOwner[_owners[i]], "owner not unique!");
+            require(_owners[i] != address(0), "invalid owner!");
+            isOwner[owners[i]] = true;
+        }
+        owners = _owners;
+        txApprovalRequired = _txApprovalRequired;
+    }
+
     modifier onlyOwner() {
         require(isOwner[msg.sender], "not owner");
         _;
