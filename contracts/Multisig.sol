@@ -61,7 +61,13 @@ contract Multisig {
         emit SubmitTransaction(msg.sender, txIndex, _to, _amount, _data);
     }
 
-    function approveTranaction(uint _txId) external onlyOwner {
+    function approveTranaction(uint _txId)
+        external
+        onlyOwner
+        transactionExists(_txId)
+        notApproved(_txId)
+        notExecuted(_txId)
+    {
         require(transactions[_txId].executed == false, "tx already executed!");
         require(approvals[_txId][msg.sender] == false, "tx already approved!");
         approvals[_txId][msg.sender] = true;
@@ -70,6 +76,21 @@ contract Multisig {
 
     modifier onlyOwner() {
         require(isOwner[msg.sender], "not owner");
+        _;
+    }
+
+    modifier transactionExists(uint _txId) {
+        require(_txId < transactions.length, "tx does not exist!");
+        _;
+    }
+
+    modifier notApproved(uint _txId) {
+        require(approvals[_txId][msg.sender] == false, "tx already approved!");
+        _;
+    }
+
+    modifier notExecuted(uint _txId) {
+        require(transactions[_txId].executed == false, "tx already executed!");
         _;
     }
 }
