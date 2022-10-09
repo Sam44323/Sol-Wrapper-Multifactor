@@ -4,12 +4,10 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 
 describe("ChainToken", function () {
-  let user1: SignerWithAddress,
-    user2: SignerWithAddress,
-    chainToken: ChainToken;
+  let user1: SignerWithAddress, chainToken: ChainToken;
 
   beforeEach(async () => {
-    [user1, user2] = await ethers.getSigners();
+    [user1] = await ethers.getSigners();
     const ChainToken = await ethers.getContractFactory("ChainToken");
     chainToken = await ChainToken.deploy();
     await chainToken.deployed();
