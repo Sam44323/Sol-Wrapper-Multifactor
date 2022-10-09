@@ -14,4 +14,22 @@ contract Multisig {
     event ApproveTransaction(address indexed owner, uint indexed txIndex);
     event RevokeTransaction(address indexed owner, uint indexed txIndex);
     event ExecuteTransaction(address indexed owner, uint indexed txIndex);
+
+    // variables for the wallet
+    address[] public owners;
+    mapping(address => bool) public isOwner;
+    uint public txApprovalRequired;
+    struct Transaction {
+        address to;
+        uint value;
+        bytes data;
+        bool executed;
+    }
+    Transaction[] public transactions;
+    mapping(uint => mapping(address => bool)) public approvals;
+
+    modifier onlyOwner() {
+        require(isOwner[msg.sender], "not owner");
+        _;
+    }
 }
