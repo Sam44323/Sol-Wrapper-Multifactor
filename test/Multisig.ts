@@ -42,4 +42,14 @@ describe("Multisig", function () {
     const balance = await multisig.balance();
     expect(parseFloat(ethers.utils.formatEther(balance))).to.be.equal(100);
   });
+
+  it("submit transaction event is working", async () => {
+    await expect(
+      multisig.submitTransaction(
+        multisig.address,
+        0,
+        ethers.utils.formatBytes32String("test")
+      )
+    ).to.emit(multisig, "SubmitTransaction");
+  });
 });
