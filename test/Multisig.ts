@@ -4,17 +4,23 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 
 describe("Multisig", function () {
-  let multisig: Multisig;
-  let owner: SignerWithAddress;
-  let addr1: SignerWithAddress;
-  let addr2: SignerWithAddress;
+  let multisig: Multisig,
+    owner: SignerWithAddress,
+    addr1: SignerWithAddress,
+    addr2: SignerWithAddress,
+    addr3: SignerWithAddress;
 
   beforeEach(async function () {
-    [owner, addr1, addr2] = await ethers.getSigners();
+    [owner, addr1, addr2, addr3] = await ethers.getSigners();
 
     multisig = await (await ethers.getContractFactory("Multisig"))
       .connect(owner)
       .deploy([owner.address, addr1.address, addr2.address], 3);
     await multisig.deployed();
+  });
+
+  it("should return the correct number of owners", async () => {
+    const ownersLength = (await multisig.getOwners()).length;
+    expect(ownersLength).to.be.equal(3);
   });
 });

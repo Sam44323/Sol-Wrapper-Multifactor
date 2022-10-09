@@ -44,9 +44,13 @@ contract Multisig {
             require(!isOwner[_owners[i]], "owner not unique!");
             require(_owners[i] != address(0), "invalid owner!");
             isOwner[owners[i]] = true;
-            owners.push(_owners[i]);
         }
+        owners = _owners;
         txApprovalRequired = _txApprovalRequired; // setting the tx-required variable
+    }
+
+    function getOwners() external view returns (address[] memory) {
+        return owners;
     }
 
     receive() external payable {
