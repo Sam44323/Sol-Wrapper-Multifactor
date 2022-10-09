@@ -45,6 +45,7 @@ contract Multisig {
             require(_owners[i] != address(0), "invalid owner!");
             isOwner[_owners[i]] = true;
             owners.push(_owners[i]);
+            nonce = 0;
         }
         txApprovalRequired = _txApprovalRequired; // setting the tx-required variable
     }
@@ -139,7 +140,7 @@ contract Multisig {
             _getApprovalCount(_txId) >= txApprovalRequired,
             "not enough approvals!"
         );
-        require(nonce > _nonce, "invalid nonce!");
+        require(_nonce > nonce, "invalid nonce!");
         Transaction storage transaction = transactions[_txId];
         transaction.executed = true;
         (bool success, ) = transaction.to.call{value: transaction.value}(

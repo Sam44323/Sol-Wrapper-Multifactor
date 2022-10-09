@@ -62,6 +62,7 @@ describe("Multisig", function () {
       );
     }
     const txId = await multisig.transactions(2);
+    console.log(txId);
     expect(parseInt(txId.value.toString())).to.be.equal(2);
   });
 
@@ -86,5 +87,24 @@ describe("Multisig", function () {
     await multisig.connect(addr1).revokeApproval(0);
     const tx = await multisig.approvals(0, addr1.address);
     expect(tx).to.be.false;
+  });
+
+  it("should execute a transaction", async () => {
+    await owner.sendTransaction({
+      to: addr1.address,
+      value: ethers.utils.parseEther("10"),
+    });
+    await multisig.submitTransaction(
+      owner.address,
+      0,
+      ethers.utils.formatBytes32String("test")
+    );
+    await multisig.connect(owner).approveTransaction(0);
+    await multisig.connect(addr1).approveTransaction(0);
+    await multisig.connect(addr2).approveTransaction(0);
+    await expect(multisig.executeTransaction(0, 1)).to.emit(
+      multisig,
+      "ExecuteTransaction"
+    );
   });
 });
