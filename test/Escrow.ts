@@ -20,4 +20,14 @@ describe("Escrow", function () {
   it("check the admin authority of the contract", async () => {
     expect(await escrow.escrowOwner()).to.equal(admin.address);
   });
+
+  it("check the deposit function", async () => {
+    await depositor1.sendTransaction({
+      to: escrow.address,
+      value: 100,
+    });
+    expect(
+      await escrow.connect(depositor1).deposits(depositor1.address)
+    ).to.equal(100);
+  });
 });
