@@ -68,8 +68,14 @@ contract Multisig {
         notApproved(_txId)
         notExecuted(_txId)
     {
-        require(transactions[_txId].executed == false, "tx already executed!");
-        require(approvals[_txId][msg.sender] == false, "tx already approved!");
+        require(
+            transactions[_txId].executed == false,
+            "transaction already executed!"
+        );
+        require(
+            approvals[_txId][msg.sender] == false,
+            "transaction already approved!"
+        );
         approvals[_txId][msg.sender] = true;
         emit ApproveTransaction(msg.sender, _txId);
     }
@@ -80,17 +86,23 @@ contract Multisig {
     }
 
     modifier transactionExists(uint _txId) {
-        require(_txId < transactions.length, "tx does not exist!");
+        require(_txId < transactions.length, "transactiontx does not exist!");
         _;
     }
 
     modifier notApproved(uint _txId) {
-        require(approvals[_txId][msg.sender] == false, "tx already approved!");
+        require(
+            approvals[_txId][msg.sender] == false,
+            "transaction already approved!"
+        );
         _;
     }
 
     modifier notExecuted(uint _txId) {
-        require(transactions[_txId].executed == false, "tx already executed!");
+        require(
+            transactions[_txId].executed == false,
+            "transaction already executed!"
+        );
         _;
     }
 }
