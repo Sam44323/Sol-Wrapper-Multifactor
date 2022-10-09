@@ -52,4 +52,19 @@ describe("Multisig", function () {
       )
     ).to.emit(multisig, "SubmitTransaction");
   });
+
+  it("transactions should be greater than 0", async () => {
+    for (let i = 0; i < 3; i++) {
+      await multisig.submitTransaction(
+        multisig.address,
+        i,
+        ethers.utils.formatBytes32String("test")
+      );
+    }
+    const txId = await multisig.transactions(2);
+
+    console.log(parseInt(txId.value.toString()));
+
+    expect(txId).to.be.equal(2);
+  });
 });
