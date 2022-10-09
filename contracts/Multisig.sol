@@ -99,14 +99,8 @@ contract Multisig {
         notApproved(_txId)
         notExecuted(_txId)
     {
-        require(
-            transactions[_txId].executed == false,
-            "transaction already executed!"
-        );
-        require(
-            approvals[_txId][msg.sender] == false,
-            "transaction already approved!"
-        );
+        require(!transactions[_txId].executed, "transaction already executed!");
+        require(!approvals[_txId][msg.sender], "transaction already approved!");
         approvals[_txId][msg.sender] = true;
         emit ApproveTransaction(msg.sender, _txId);
     }
@@ -118,10 +112,7 @@ contract Multisig {
         approved(_txId)
         notExecuted(_txId)
     {
-        require(
-            transactions[_txId].executed == false,
-            "transaction already executed!"
-        );
+        require(!transactions[_txId].executed, "transaction already executed!");
         require(
             approvals[_txId][msg.sender] == true,
             "transaction not approved!"
@@ -166,18 +157,12 @@ contract Multisig {
     }
 
     modifier notApproved(uint _txId) {
-        require(
-            approvals[_txId][msg.sender] == false,
-            "transaction already approved!"
-        );
+        require(!approvals[_txId][msg.sender], "transaction already approved!");
         _;
     }
 
     modifier notExecuted(uint _txId) {
-        require(
-            transactions[_txId].executed == false,
-            "transaction already executed!"
-        );
+        require(!transactions[_txId].executed, "transaction already executed!");
         _;
     }
 }
