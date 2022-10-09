@@ -29,9 +29,9 @@ contract ChainToken is IERC20 {
     uint public totalSupply;
     mapping(address => uint) public balanceOf;
     mapping(address => mapping(address => uint)) public allowance;
-    string public name = "ChainToken";
-    string public symbol = "CTK";
-    uint public decimals = 18;
+    string public constant name = "ChainToken";
+    string public constant symbol = "CTK";
+    uint public constant decimals = 18;
 
     function transfer(address recipient, uint amount) external returns (bool) {
         balanceOf[msg.sender] -= amount;
