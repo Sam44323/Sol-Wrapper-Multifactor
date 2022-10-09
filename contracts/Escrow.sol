@@ -17,6 +17,11 @@ contract Escrow {
         deposits[msg.sender] += msg.value;
     }
 
+    // fetching the balance of the contract
+    function getBalance() public view returns (uint) {
+        return address(this).balance;
+    }
+
     // withdraw function (admin-only and destructible[allocation_0] post withdraw)
     function withdraw() external onlyOwner {
         emit Withdraw(escrowOwner, address(this).balance);

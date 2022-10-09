@@ -24,10 +24,26 @@ describe("Escrow", function () {
   it("check the deposit function", async () => {
     await depositor1.sendTransaction({
       to: escrow.address,
-      value: 100,
+      value: ethers.utils.parseEther("100"),
     });
     expect(
-      await escrow.connect(depositor1).deposits(depositor1.address)
+      parseFloat(
+        ethers.utils.formatEther(
+          await escrow.connect(depositor1).deposits(depositor1.address)
+        )
+      )
     ).to.equal(100);
+  });
+
+  it("check the withdraw function", async () => {
+    await depositor1.sendTransaction({
+      to: escrow.address,
+      value: ethers.utils.parseEther("100"),
+    });
+    await escrow.connect(admin).withdraw();
+    const adminBalance = parseFloat(
+      ethers.utils.formatEther(await admin.getBalance())
+    );
+    expect(adminBalance).to.greaterThanOrEqual(10090);
   });
 });
