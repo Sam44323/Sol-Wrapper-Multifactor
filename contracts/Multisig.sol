@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
+/// @dev enhancement can be create a new wallet address on by the contract
+
 contract Multisig {
     // events for the wallet
     event Deposit(address indexed sender, uint amount, uint balance);
@@ -28,6 +30,7 @@ contract Multisig {
     Transaction[] public transactions;
     mapping(uint => mapping(address => bool)) public approvals;
 
+    // called on creation of a new wallet with the owners
     constructor(address[] memory _owners, uint _txApprovalRequired) {
         require(_owners.length > 0, "owners required");
         require(
@@ -49,6 +52,20 @@ contract Multisig {
         emit Deposit(msg.sender, msg.value, address(this).balance);
     }
 
+    function _getApprovalCount(uint _txId)
+        private
+        view
+        onlyOwner
+        returns (uint count)
+    {
+        for (uint i = 0; i < owners.length; i++) {
+            if (approvals[_txId][owners[i]]) {
+                count += 1;
+            }
+        }
+        return count;
+    }
+
     function submitTransaction(
         address _to,
         uint _amount,
@@ -61,7 +78,7 @@ contract Multisig {
         emit SubmitTransaction(msg.sender, txIndex, _to, _amount, _data);
     }
 
-    function approveTranaction(uint _txId)
+    function approveTransaction(uint _txId)
         external
         onlyOwner
         transactionExists(_txId)
@@ -80,18 +97,23 @@ contract Multisig {
         emit ApproveTransaction(msg.sender, _txId);
     }
 
-    function _getApprovalCount(uint _txId)
-        private
-        view
+    function executeTransaction(uint _txId)
+        external
         onlyOwner
-        returns (uint count)
+        transactionExists(_txId)
+        notExecuted(_txId)
     {
-        for (uint i = 0; i < owners.length; i++) {
-            if (approvals[_txId][owners[i]]) {
-                count += 1;
-            }
-        }
-        return count;
+        require(
+            _getApprovalCount(_txId) >= txApprovalRequired,
+            "not enough approvals!"
+        );
+        Transaction storage transaction = transactions[_txId];
+        transaction.executed = true;
+        (bool success, ) = transaction.to.call{value: transaction.value}(
+            transaction.data
+        );
+        require(success, "transaction failed!");
+        emit ExecuteTransaction(msg.sender, _txId);
     }
 
     modifier onlyOwner() {
