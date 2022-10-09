@@ -62,7 +62,17 @@ describe("Multisig", function () {
       );
     }
     const txId = await multisig.transactions(2);
+    expect(parseInt(txId.value.toString())).to.be.equal(2);
+  });
 
-    expect(txId).to.be.equal(2);
+  it("approve a transaction", async () => {
+    await multisig.submitTransaction(
+      multisig.address,
+      0,
+      ethers.utils.formatBytes32String("test")
+    );
+    await multisig.connect(addr1).approveTransaction(0);
+    const tx = await multisig.approvals(0, addr1.address);
+    expect(tx).to.be.true;
   });
 });
