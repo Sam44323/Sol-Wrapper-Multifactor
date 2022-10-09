@@ -106,5 +106,6 @@ describe("Multisig", function () {
       multisig,
       "ExecuteTransaction"
     );
+    expect((await multisig.transactions(0)).executed).to.be.true;
   });
 });
