@@ -26,7 +26,20 @@ describe("Multisig", function () {
 
   it("should return false for invalid owner", async () => {
     const isOwner = await multisig.isOwner(addr3.address);
-
     expect(isOwner).to.be.false;
+  });
+
+  it("should return true for valid owner", async () => {
+    const isOwner = await multisig.isOwner(owner.address);
+    expect(isOwner).to.be.true;
+  });
+
+  it("should return the current balance of the wallet", async () => {
+    await owner.sendTransaction({
+      to: multisig.address,
+      value: ethers.utils.parseEther("100"),
+    });
+    const balance = await multisig.balance();
+    expect(parseFloat(ethers.utils.formatEther(balance))).to.be.equal(100);
   });
 });

@@ -61,6 +61,10 @@ contract Multisig {
         emit Deposit(msg.sender, msg.value, address(this).balance);
     }
 
+    function balance() external view returns (uint) {
+        return address(this).balance;
+    }
+
     function _getApprovalCount(uint _txId)
         private
         view
