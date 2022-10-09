@@ -21,6 +21,7 @@ contract Multisig {
     address[] public owners;
     mapping(address => bool) public isOwner;
     uint public txApprovalRequired;
+    uint256 nonce;
     struct Transaction {
         address to;
         uint value;
@@ -116,7 +117,7 @@ contract Multisig {
         emit RevokeTransaction(msg.sender, _txId);
     }
 
-    function executeTransaction(uint _txId)
+    function executeTransaction(uint _txId, uint _nonce)
         external
         onlyOwner
         transactionExists(_txId)
@@ -126,6 +127,7 @@ contract Multisig {
             _getApprovalCount(_txId) >= txApprovalRequired,
             "not enough approvals!"
         );
+        require(nonce > _nonce, "invalid nonce!");
         Transaction storage transaction = transactions[_txId];
         transaction.executed = true;
         (bool success, ) = transaction.to.call{value: transaction.value}(
