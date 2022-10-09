@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "compile": "npx hardhat compile",
-    "test": "npx hardhat test",
+    "test": "REPORT_GAS=true npx hardhat test",
     "deploy": "npx hardhat run scripts/deploy.ts",
     "verify": "npx hardhat verify",
     "coverage": "hardhat coverage"
