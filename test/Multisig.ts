@@ -75,4 +75,16 @@ describe("Multisig", function () {
     const tx = await multisig.approvals(0, addr1.address);
     expect(tx).to.be.true;
   });
+
+  it("revoke a transaction", async () => {
+    await multisig.submitTransaction(
+      multisig.address,
+      0,
+      ethers.utils.formatBytes32String("test")
+    );
+    await multisig.connect(addr1).approveTransaction(0);
+    await multisig.connect(addr1).revokeApproval(0);
+    const tx = await multisig.approvals(0, addr1.address);
+    expect(tx).to.be.false;
+  });
 });
