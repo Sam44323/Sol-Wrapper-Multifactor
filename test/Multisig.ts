@@ -23,4 +23,10 @@ describe("Multisig", function () {
     const ownersLength = (await multisig.getOwners()).length;
     expect(ownersLength).to.be.equal(3);
   });
+
+  it("should return false for invalid owner", async () => {
+    const isOwner = await multisig.isOwner(addr3.address);
+
+    expect(isOwner).to.be.false;
+  });
 });
