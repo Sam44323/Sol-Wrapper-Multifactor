@@ -20,7 +20,7 @@ describe("Multisig", function () {
   });
 
   it("should return the correct number of owners", async () => {
-    const ownersLength = (await multisig.getOwners()).length;
+    const ownersLength = (await multisig.connect(owner).getOwners()).length;
     expect(ownersLength).to.be.equal(3);
   });
 

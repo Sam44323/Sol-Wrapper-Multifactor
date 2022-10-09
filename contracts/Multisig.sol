@@ -40,17 +40,21 @@ contract Multisig {
         );
 
         // pushing the owners to the array
-        for (uint i = 0; i < owners.length; i++) {
+        for (uint i = 0; i < _owners.length; i++) {
             require(!isOwner[_owners[i]], "owner not unique!");
             require(_owners[i] != address(0), "invalid owner!");
-            isOwner[owners[i]] = true;
+            isOwner[_owners[i]] = true;
+            owners.push(_owners[i]);
         }
-        owners = _owners;
         txApprovalRequired = _txApprovalRequired; // setting the tx-required variable
     }
 
-    function getOwners() external view returns (address[] memory) {
+    function getOwners() external view onlyOwner returns (address[] memory) {
         return owners;
+    }
+
+    function getIsOwner() external view returns (bool) {
+        return isOwner[msg.sender];
     }
 
     receive() external payable {
