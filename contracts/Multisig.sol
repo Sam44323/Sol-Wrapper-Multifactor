@@ -97,6 +97,25 @@ contract Multisig {
         emit ApproveTransaction(msg.sender, _txId);
     }
 
+    function revokeApproval(uint _txId)
+        external
+        onlyOwner
+        transactionExists(_txId)
+        approved(_txId)
+        notExecuted(_txId)
+    {
+        require(
+            transactions[_txId].executed == false,
+            "transaction already executed!"
+        );
+        require(
+            approvals[_txId][msg.sender] == true,
+            "transaction not approved!"
+        );
+        approvals[_txId][msg.sender] = false;
+        emit RevokeTransaction(msg.sender, _txId);
+    }
+
     function executeTransaction(uint _txId)
         external
         onlyOwner
@@ -123,6 +142,11 @@ contract Multisig {
 
     modifier transactionExists(uint _txId) {
         require(_txId < transactions.length, "transactiontx does not exist!");
+        _;
+    }
+
+    modifier approved(uint _txId) {
+        require(approvals[_txId][msg.sender], "transaction not approved!");
         _;
     }
 
