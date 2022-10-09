@@ -80,6 +80,21 @@ contract Multisig {
         emit ApproveTransaction(msg.sender, _txId);
     }
 
+    function _getApprovalCount(uint _txId)
+        private
+        view
+        onlyOwner
+        returns (uint)
+    {
+        uint count = 0;
+        for (uint i = 0; i < owners.length; i++) {
+            if (approvals[_txId][owners[i]]) {
+                count += 1;
+            }
+        }
+        return count;
+    }
+
     modifier onlyOwner() {
         require(isOwner[msg.sender], "not owner");
         _;
