@@ -84,9 +84,8 @@ contract Multisig {
         private
         view
         onlyOwner
-        returns (uint)
+        returns (uint count)
     {
-        uint count = 0;
         for (uint i = 0; i < owners.length; i++) {
             if (approvals[_txId][owners[i]]) {
                 count += 1;
