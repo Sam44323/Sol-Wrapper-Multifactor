@@ -32,6 +32,11 @@ contract Dutchauction is IERC721 {
         uint _startTime
     ) {
         require(_discountRate < 100, "Discount rate must be less than 100%");
+        discountRate = _discountRate;
+        require(
+            _startingPrice >= discountRate * DURATION,
+            "Starting price too low"
+        );
         require(
             _startTime >= block.timestamp,
             "Start time must be in the future!"
@@ -39,7 +44,6 @@ contract Dutchauction is IERC721 {
         nft = IERC721(_nft);
         nftId = _nftId;
         startingPrice = _startingPrice;
-        discountRate = _discountRate;
         startTime = _startTime;
         endTime = _startTime + DURATION;
         seller = msg.sender;
