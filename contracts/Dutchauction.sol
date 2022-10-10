@@ -9,4 +9,12 @@ interface IERC721 {
     ) external;
 }
 
-contract Dutchauction {}
+contract Dutchauction is IERC721 {
+    function transferFrom(
+        address _from,
+        address _to,
+        uint256 _tokenId
+    ) external override {
+        // do something
+    }
+}
