@@ -9,7 +9,7 @@ interface IERC721 {
     ) external;
 }
 
-contract Dutchauction is IERC721 {
+contract Dutchauction {
     // contract based variables
     uint private constant DURATION = 7 days;
     uint public immutable startTime;
@@ -71,13 +71,5 @@ contract Dutchauction is IERC721 {
         if (refundPrice > 0) payable(msg.sender).transfer(refundPrice);
         seller.transfer(msg.value);
         selfdestruct(seller);
-    }
-
-    function transferFrom(
-        address _from,
-        address _to,
-        uint256 _tokenId
-    ) external override {
-        // do something
     }
 }
