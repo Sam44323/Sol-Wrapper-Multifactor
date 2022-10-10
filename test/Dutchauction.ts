@@ -23,8 +23,7 @@ describe("Dutchauction", function () {
       nft.address,
       1,
       100,
-      10,
-      new Date().getTime()
+      10
     )) as Dutchauction;
     await dutchauction.deployed();
   });

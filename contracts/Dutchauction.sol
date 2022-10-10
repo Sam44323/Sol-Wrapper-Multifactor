@@ -28,8 +28,7 @@ contract Dutchauction {
         address _nft,
         uint _nftId,
         uint _startingPrice,
-        uint _discountRate,
-        uint _startTime
+        uint _discountRate
     ) {
         require(_discountRate < 100, "Discount rate must be less than 100%");
         discountRate = _discountRate;
@@ -37,15 +36,11 @@ contract Dutchauction {
             _startingPrice >= discountRate * DURATION,
             "Starting price too low"
         );
-        require(
-            _startTime >= block.timestamp,
-            "Start time must be in the future!"
-        );
         nft = IERC721(_nft);
         nftId = _nftId;
         startingPrice = _startingPrice;
-        startTime = _startTime;
-        endTime = _startTime + DURATION;
+        startTime = block.timestamp;
+        endTime = startTime + DURATION;
         seller = payable(msg.sender);
     }
 
