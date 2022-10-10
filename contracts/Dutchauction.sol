@@ -22,7 +22,7 @@ contract Dutchauction is IERC721 {
     uint public immutable nftId;
 
     // seller based variables
-    address public immutable seller;
+    address payable public immutable seller;
 
     constructor(
         address _nft,
@@ -46,7 +46,7 @@ contract Dutchauction is IERC721 {
         startingPrice = _startingPrice;
         startTime = _startTime;
         endTime = _startTime + DURATION;
-        seller = msg.sender;
+        seller = payable(msg.sender);
     }
 
     function getListingPrice() external view returns (uint) {
