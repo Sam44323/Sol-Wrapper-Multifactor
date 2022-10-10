@@ -31,10 +31,10 @@ contract Dutchauction is IERC721 {
         uint _discountRate,
         uint _startTime
     ) {
-        require(_discountRate < 100, "Discount rate must be less than 100");
+        require(_discountRate < 100, "Discount rate must be less than 100%");
         require(
             _startTime >= block.timestamp,
-            "Start time must be in the future"
+            "Start time must be in the future!"
         );
         nft = IERC721(_nft);
         nftId = _nftId;
