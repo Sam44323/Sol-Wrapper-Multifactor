@@ -49,6 +49,18 @@ contract Dutchauction is IERC721 {
         seller = msg.sender;
     }
 
+    function getListingPrice() external view returns (uint) {
+        if (block.timestamp < startTime) {
+            return startingPrice;
+        } else if (block.timestamp >= endTime) {
+            return 0;
+        } else {
+            uint elapsedTime = block.timestamp - startTime; // this means that price will be decrease as the auction goes on
+            uint discount = (elapsedTime * discountRate) / DURATION;
+            return startingPrice - discount;
+        }
+    }
+
     function transferFrom(
         address _from,
         address _to,
