@@ -14,7 +14,7 @@ describe("Dutchauction", function () {
     [owner, addr1, addr2] = await ethers.getSigners();
 
     const NFT = await ethers.getContractFactory("NFT");
-    nft = (await NFT.deploy({
+    nft = (await NFT.deploy("Dutchauction", "DTK", {
       gasLimit: 10000000,
     })) as NFT;
     await nft.deployed();
@@ -22,7 +22,6 @@ describe("Dutchauction", function () {
     const Dutchauction = await ethers.getContractFactory("Dutchauction");
     dutchauction = (await Dutchauction.deploy(
       nft.address,
-      1,
       100,
       10
     )) as Dutchauction;

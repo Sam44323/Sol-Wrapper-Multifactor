@@ -16,17 +16,17 @@ contract Dutchauction {
     uint public immutable endTime;
     uint public immutable startingPrice;
     uint public immutable discountRate;
+    bool private auctionActive;
 
     // nft based variables
     IERC721 public immutable nft;
-    uint public immutable nftId;
+    uint private nftId;
 
     // seller based variables
     address payable public immutable seller;
 
     constructor(
         address _nft,
-        uint _nftId,
         uint _startingPrice,
         uint _discountRate
     ) {
@@ -37,11 +37,14 @@ contract Dutchauction {
             "Starting price too low"
         );
         nft = IERC721(_nft);
-        nftId = _nftId;
         startingPrice = _startingPrice;
         startTime = block.timestamp;
         endTime = startTime + DURATION;
         seller = payable(msg.sender);
+    }
+
+    function startAuction(uint _nftId) external isActive {
+        nftId = _nftId;
     }
 
     function getListingPrice() public view returns (uint) {
@@ -66,5 +69,10 @@ contract Dutchauction {
         if (refundPrice > 0) payable(msg.sender).transfer(refundPrice);
         seller.transfer(msg.value);
         selfdestruct(seller);
+    }
+
+    modifier isActive() {
+        require(auctionActive == true, "Auction is not active");
+        _;
     }
 }
