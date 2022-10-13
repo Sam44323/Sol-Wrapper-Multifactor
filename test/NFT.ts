@@ -72,4 +72,10 @@ describe("NFT", () => {
       "ERC721: You don't own this token for burning"
     );
   });
+
+  it("Should fail if sender tries to burn token that does not exist", async () => {
+    await expect(nft.connect(owner).burn(1)).to.be.revertedWith(
+      "ERC721: Token does not exist"
+    );
+  });
 });
