@@ -20,7 +20,7 @@ describe("Dutchauction", function () {
     await nft.deployed();
 
     const Dutchauction = await ethers.getContractFactory("Dutchauction");
-    dutchauction = (await Dutchauction.deploy(
+    dutchauction = (await Dutchauction.connect(owner).deploy(
       nft.address,
       10000000,
       1
@@ -37,5 +37,11 @@ describe("Dutchauction", function () {
     ).to.equal(1);
   });
 
-  it("Ends the auction and transfers the nft to the owner", async () => {});
+  it("Ends the auction and transfers the nft to the owner", async () => {
+    await nft.connect(owner).safeMint(owner.address, 1, "abc");
+    await nft.connect(owner).approve(dutchauction.address, 1);
+    await dutchauction.connect(owner).startAuction(1);
+    await dutchauction.connect(owner).endAuction();
+    expect(await nft.ownerOf(1)).to.equal(owner.address);
+  });
 });

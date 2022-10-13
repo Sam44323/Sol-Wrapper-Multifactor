@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
+import "@openzeppelin/contracts/access/Ownable.sol";
+
 interface IERC721 {
     function transferFrom(
         address _from,
@@ -9,7 +11,7 @@ interface IERC721 {
     ) external;
 }
 
-contract Dutchauction {
+contract Dutchauction is Ownable {
     // contract based variables
     uint private constant DURATION = 7 days;
     uint public immutable startTime;
@@ -17,6 +19,7 @@ contract Dutchauction {
     uint public immutable startingPrice;
     uint public immutable discountRate;
     bool private auctionActive;
+    address private _owner;
 
     // nft based variables
     IERC721 public immutable nft;
@@ -41,6 +44,7 @@ contract Dutchauction {
         startTime = block.timestamp;
         endTime = startTime + DURATION;
         seller = payable(msg.sender);
+        _owner = msg.sender;
     }
 
     function startAuction(uint _nftId) external {
