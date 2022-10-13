@@ -48,6 +48,10 @@ contract Dutchauction {
         auctionActive = true;
     }
 
+    function getAuctionedTokenId() external view returns (uint) {
+        return nftId;
+    }
+
     function getListingPrice() internal view returns (uint) {
         if (block.timestamp < startTime) {
             return startingPrice;
