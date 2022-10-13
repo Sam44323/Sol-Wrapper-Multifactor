@@ -45,6 +45,7 @@ contract Dutchauction {
 
     function startAuction(uint _nftId) external isActive {
         nftId = _nftId;
+        auctionActive = true;
     }
 
     function getListingPrice() internal view returns (uint) {
@@ -59,7 +60,7 @@ contract Dutchauction {
         }
     }
 
-    function buy() external payable {
+    function buy() external payable isActive {
         require(block.timestamp >= startTime, "Auction not started yet!");
         require(block.timestamp <= endTime, "Auction already ended!");
         uint price = getListingPrice();
