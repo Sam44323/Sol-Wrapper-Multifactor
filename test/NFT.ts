@@ -78,4 +78,12 @@ describe("NFT", () => {
       "ERC721: Token does not exist"
     );
   });
+
+  it("Should fail if sender tries to burn token that is already burned", async () => {
+    await nft.connect(owner).safeMint(addr1.address, 1, "abc");
+    await nft.connect(addr1).burn(1);
+    await expect(nft.connect(addr1).burn(1)).to.be.revertedWith(
+      "ERC721: Token does not exist"
+    );
+  });
 });
