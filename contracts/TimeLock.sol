@@ -10,3 +10,19 @@ contract TimeLock is Ownable {
         _owner = msg.sender;
     }
 }
+
+contract TimeLockTargetCaller {
+    address public timelock;
+
+    constructor(address _timelock) {
+        timelock = _timelock;
+    }
+
+    function testCaller() external view returns (uint) {
+        require(
+            msg.sender == timelock,
+            "caller needs to be a timelock contract"
+        );
+        return 1;
+    }
+}
