@@ -45,6 +45,7 @@ contract Dutchauction {
 
     function startAuction(uint _nftId) external isActive {
         nftId = _nftId;
+        nft.transferFrom(msg.sender, address(this), _nftId);
         auctionActive = true;
     }
 
