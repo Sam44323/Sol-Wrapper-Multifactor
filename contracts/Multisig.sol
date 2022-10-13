@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-/// @dev enhancement can be create a new wallet address on by the contract
+/// @dev enhancement can be to create a new wallet address by the contract
 
 contract Multisig {
     // events for the wallet
