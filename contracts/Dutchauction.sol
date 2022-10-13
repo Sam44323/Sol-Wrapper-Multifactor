@@ -75,15 +75,16 @@ contract Dutchauction is Ownable {
         uint price = getListingPrice();
         require(msg.value >= price, "Not enough funds sent!");
         uint refundPrice = msg.value - price;
-        nft.transferFrom(seller, msg.sender, nftId);
+        nft.transferFrom(address(this), msg.sender, nftId);
+        nftId = 0;
         if (refundPrice > 0) payable(msg.sender).transfer(refundPrice);
         seller.transfer(msg.value);
         endAuction();
     }
 
-    function endAuction() public isActive isOwner {
+    function endAuction() public isActive {
         auctionActive = false;
-        nft.transferFrom(address(this), seller, nftId);
+        if (nftId > 0) nft.transferFrom(address(this), seller, nftId);
         selfdestruct(seller); // sending all the contract's balance to the seller (if any) and destroy the contract
     }
 

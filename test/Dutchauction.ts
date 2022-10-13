@@ -44,4 +44,12 @@ describe("Dutchauction", function () {
     await dutchauction.connect(owner).endAuction();
     expect(await nft.ownerOf(1)).to.equal(owner.address);
   });
+
+  it("Transfer for NFT's and funds when buying", async () => {
+    await nft.connect(owner).safeMint(owner.address, 1, "abc");
+    await nft.connect(owner).approve(dutchauction.address, 1);
+    await dutchauction.connect(owner).startAuction(1);
+    await dutchauction.connect(addr2).buy({ value: 10000000 });
+    expect(await nft.ownerOf(1)).to.equal(addr2.address);
+  });
 });
