@@ -75,7 +75,7 @@ contract Dutchauction {
     function endAuction() internal isActive {
         auctionActive = false;
         nft.transferFrom(address(this), seller, nftId);
-        selfdestruct(seller); // sending all the contract's balance to the seller if any and destroy the contract
+        selfdestruct(seller); // sending all the contract's balance to the seller (if any) and destroy the contract
     }
 
     modifier isActive() {
