@@ -65,4 +65,11 @@ describe("NFT", () => {
     await nft.connect(addr1).burn(1);
     expect(await nft.balanceOf(addr1.address)).to.equal(0);
   });
+
+  it("Should fail if sender tries to burn token that is not owned", async () => {
+    await nft.connect(owner).safeMint(addr1.address, 1, "abc");
+    await expect(nft.connect(owner).burn(1)).to.be.revertedWith(
+      "ERC721: You don't own this token for burning"
+    );
+  });
 });
