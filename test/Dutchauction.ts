@@ -22,8 +22,8 @@ describe("Dutchauction", function () {
     const Dutchauction = await ethers.getContractFactory("Dutchauction");
     dutchauction = (await Dutchauction.deploy(
       nft.address,
-      1000,
-      10
+      10000000,
+      1
     )) as Dutchauction;
     await dutchauction.deployed();
   });
@@ -32,6 +32,8 @@ describe("Dutchauction", function () {
     await nft.connect(owner).safeMint(addr1.address, 1, "abc");
     await nft.connect(addr1).approve(dutchauction.address, 1);
     await dutchauction.connect(addr1).startAuction(1);
-    expect(await dutchauction.getAuctionedTokenId()).to.equal(1);
+    expect(
+      parseFloat((await dutchauction.getAuctionedTokenId()).toString())
+    ).to.equal(1);
   });
 });
