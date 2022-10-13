@@ -36,4 +36,6 @@ describe("Dutchauction", function () {
       parseFloat((await dutchauction.getAuctionedTokenId()).toString())
     ).to.equal(1);
   });
+
+  it("Ends the auction and transfers the nft to the owner", async () => {});
 });

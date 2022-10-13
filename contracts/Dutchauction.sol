@@ -77,7 +77,7 @@ contract Dutchauction {
         endAuction();
     }
 
-    function endAuction() internal isActive {
+    function endAuction() public isActive isOwner {
         auctionActive = false;
         nft.transferFrom(address(this), seller, nftId);
         selfdestruct(seller); // sending all the contract's balance to the seller (if any) and destroy the contract
@@ -85,6 +85,11 @@ contract Dutchauction {
 
     modifier isActive() {
         require(auctionActive == true, "Auction is not active");
+        _;
+    }
+
+    modifier isOwner() {
+        require(msg.sender == seller, "You are not the owner of this contract");
         _;
     }
 }
