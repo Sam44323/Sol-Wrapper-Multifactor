@@ -47,7 +47,7 @@ contract Dutchauction {
         nftId = _nftId;
     }
 
-    function getListingPrice() public view returns (uint) {
+    function getListingPrice() internal view returns (uint) {
         if (block.timestamp < startTime) {
             return startingPrice;
         } else if (block.timestamp >= endTime) {
@@ -68,7 +68,13 @@ contract Dutchauction {
         nft.transferFrom(seller, msg.sender, nftId);
         if (refundPrice > 0) payable(msg.sender).transfer(refundPrice);
         seller.transfer(msg.value);
-        selfdestruct(seller);
+        endAuction();
+    }
+
+    function endAuction() internal isActive {
+        auctionActive = false;
+        nft.transferFrom(address(this), seller, nftId);
+        selfdestruct(seller); // sending all the contract's balance to the seller if any and destroy the contract
     }
 
     modifier isActive() {
