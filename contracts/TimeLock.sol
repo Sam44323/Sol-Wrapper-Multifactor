@@ -9,6 +9,23 @@ contract TimeLock is Ownable {
     constructor() {
         _owner = msg.sender;
     }
+
+    function queue(
+        address _target,
+        uint value,
+        string calldata _func,
+        bytes calldata _data,
+        uint _timestamp
+    ) external onlyOwner {}
+
+    function execute() external {
+        /**
+         * @Step1: create a tx id
+         * @Step2: check if the tx id is in the queue i.e. unique
+         * @Step3: check if the timestamp is in the future
+         * @Step4: queue the transaction
+         */
+    }
 }
 
 contract TimeLockTargetCaller {
