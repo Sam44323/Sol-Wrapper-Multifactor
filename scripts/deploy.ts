@@ -11,8 +11,6 @@ async function main() {
   const lock = await Lock.deploy(unlockTime, { value: lockedAmount });
 
   await lock.deployed();
-
-  console.log(`Lock with 1 ETH and unlock timestamp ${unlockTime} deployed to ${lock.address}`);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

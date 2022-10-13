@@ -62,7 +62,6 @@ describe("Multisig", function () {
       );
     }
     const txId = await multisig.transactions(2);
-    console.log(txId);
     expect(parseInt(txId.value.toString())).to.be.equal(2);
   });
 

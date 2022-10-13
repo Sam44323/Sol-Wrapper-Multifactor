@@ -56,7 +56,6 @@ describe("Dutchauction", function () {
   it("Should return error if auction is not active", async () => {
     await nft.connect(owner).safeMint(owner.address, 1, "abc");
     await nft.connect(owner).approve(dutchauction.address, 1);
-    // await dutchauction.connect(owner).startAuction(1);
     await expect(dutchauction.connect(owner).endAuction()).to.be.revertedWith(
       "Auction is not active"
     );
