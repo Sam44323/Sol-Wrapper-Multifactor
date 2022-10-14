@@ -1,6 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
+/*
+* @description: TimeLock is a contract that publishes a transaction to be executed in the future. After a mimimum waiting period, the transaction can be executed.
+*/
+
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract TimeLock is Ownable {
