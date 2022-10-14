@@ -61,4 +61,10 @@ describe("TimeLock", () => {
       "Cancel"
     );
   });
+
+  it("Should return an error if the transactionId does not exist", async () => {
+    await expect(
+      timeLock.connect(owner).cancel(ethers.utils.formatBytes32String("test"))
+    ).to.be.revertedWith("TimeLock: transaction not queued");
+  });
 });
