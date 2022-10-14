@@ -32,6 +32,16 @@ contract TimeLock is Ownable {
         _owner = msg.sender;
     }
 
+    function computeTxId(
+        address _target,
+        uint _value,
+        string calldata _func,
+        bytes calldata _data,
+        uint _timestamp
+    ) public pure returns (bytes32) {
+        return keccak256(abi.encode(_target, _value, _func, _data, _timestamp));
+    }
+
     function queue(
         address _target,
         uint value,
