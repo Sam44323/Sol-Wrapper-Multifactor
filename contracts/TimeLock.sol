@@ -11,9 +11,9 @@ contract TimeLock is Ownable {
     address private _owner;
     mapping(bytes32 => bool) private _queuedTransactions;
 
-    uint public constant MIN_DELAY = 10; // seconds
-    uint public constant MAX_DELAY = 1000; // seconds
-    uint public constant GRACE_PERIOD = 1000; // seconds
+    uint public constant MIN_DELAY = 10 seconds; // typically will be days/weeks
+    uint public constant MAX_DELAY = 1000 seconds; // typically will be days/weeks
+    uint public constant GRACE_PERIOD = 1000 seconds; // typically will be days/weeks
 
     event Queue(
         bytes32 indexed txId,
