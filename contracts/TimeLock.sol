@@ -15,6 +15,9 @@ contract TimeLock is Ownable {
     uint public constant MAX_DELAY = 1000 seconds; // typically will be days/weeks
     uint public constant GRACE_PERIOD = 1000 seconds; // typically will be days/weeks
 
+    // custom errors
+    error TimestampNotInRangeError(uint blockTimestamp, uint timestamp);
+
     event Queue(
         bytes32 indexed txId,
         address indexed target,
@@ -68,11 +71,12 @@ contract TimeLock is Ownable {
         // ---|------------|---------------|-------
         //  block    block + min     block + max
         //  number    wait time      wait time
-        require(
-            _timestamp >= block.timestamp + MIN_DELAY &&
-                _timestamp <= block.timestamp + MAX_DELAY,
-            "TimeLock: timestamp out of range"
-        );
+        if (
+            _timestamp < block.timestamp + MIN_DELAY ||
+            _timestamp > block.timestamp + MAX_DELAY
+        ) {
+            revert TimestampNotInRangeError(block.timestamp, _timestamp);
+        }
         _queuedTransactions[txId] = true;
 
         emit Queue(txId, _target, _value, _func, _data, _timestamp);
