@@ -12,4 +12,13 @@ describe("WETH", () => {
     weth = await WETH.deploy();
     await weth.deployed();
   });
+
+  it("should return the correct name and symbol", async () => {
+    expect(await weth.name()).to.equal("Wrapped Ether");
+    expect(await weth.symbol()).to.equal("WETH");
+  });
+
+  it("should return the correct decimals", async () => {
+    expect(await weth.decimals()).to.equal(18);
+  });
 });
