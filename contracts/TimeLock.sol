@@ -38,6 +38,7 @@ contract TimeLock is Ownable {
         bytes data,
         uint timestamp
     );
+    event Cancel(bytes32 indexed txId);
 
     constructor() {
         _owner = msg.sender;
@@ -126,6 +127,14 @@ contract TimeLock is Ownable {
         emit Execute(txId, _target, _value, _func, _data, _timestamp);
 
         return res;
+    }
+
+    function cancel(bytes32 _txId) external onlyOwner {
+        require(_queuedTransactions[_txId], "TimeLock: transaction not queued");
+
+        _queuedTransactions[_txId] = false;
+
+        emit Cancel(_txId);
     }
 }
 
