@@ -68,11 +68,14 @@ contract TimeLock is Ownable {
         // ---|------------|---------------|-------
         //  block    block + min     block + max
         //  number    wait time      wait time
-        reqiure(
+        require(
             _timestamp >= block.timestamp + MIN_DELAY &&
                 _timestamp <= block.timestamp + MAX_DELAY,
             "TimeLock: timestamp out of range"
         );
+        _queuedTransactions[txId] = true;
+
+        emit Queue(txId, _target, _value, _func, _data, _timestamp);
     }
 
     function execute() external {}
