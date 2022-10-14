@@ -2,7 +2,6 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { WETH } from "../typechain";
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import { parseEther } from "ethers/lib/utils";
 
 describe("WETH", () => {
   let weth: WETH, owner: SignerWithAddress, addr1: SignerWithAddress;
