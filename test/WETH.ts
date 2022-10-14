@@ -31,4 +31,18 @@ describe("WETH", () => {
       parseFloat((await weth.balanceOf(addr1.address)).toString())
     ).to.equal(10);
   });
+
+  it("Burn some WETH token with unlocking", async () => {
+    await weth.connect(owner).approve(addr1.address, 10);
+    await weth.connect(addr1).mint({
+      value: 10,
+    });
+    expect(
+      parseFloat((await weth.balanceOf(addr1.address)).toString())
+    ).to.equal(10);
+    await weth.connect(addr1).burn(10);
+    expect(
+      parseFloat((await weth.balanceOf(addr1.address)).toString())
+    ).to.equal(0);
+  });
 });
