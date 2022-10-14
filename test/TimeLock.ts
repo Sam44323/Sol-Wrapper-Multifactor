@@ -23,4 +23,14 @@ describe("TimeLock", () => {
     )) as TimeLockTargetCaller;
     await timelockTester.deployed();
   });
+
+  it("Timelock contract address for tester should be equal to the actual address", async () => {
+    expect(await timelockTester.timelock()).to.equal(timeLock.address);
+  });
+
+  it("Should return and error if the tester is not called by the timelock", async () => {
+    await expect(timelockTester.testCaller()).to.be.revertedWith(
+      "caller needs to be a timelock contract"
+    );
+  });
 });

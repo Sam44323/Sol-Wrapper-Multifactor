@@ -37,7 +37,7 @@ describe("NFT", () => {
     const initialOwnerBalance = await nft.balanceOf(owner.address);
     await expect(
       nft.connect(addr1).transferFrom(addr1.address, owner.address, 1)
-    ).to.be.revertedWith("ERC721: Undersupply for tokens");
+    ).to.be.revertedWith("ERC721: invalid token ID");
     expect(await nft.balanceOf(owner.address)).to.equal(initialOwnerBalance);
   });
 
@@ -57,7 +57,7 @@ describe("NFT", () => {
     await nft.connect(owner).safeMint(addr1.address, 1, "abc");
     await expect(
       nft.connect(owner).transferFrom(addr1.address, owner.address, 1)
-    ).to.be.revertedWith("ERC721: You don't own this token");
+    ).to.be.revertedWith("ERC721: caller is not token owner nor approved");
   });
 
   it("Support burning for tokens", async () => {
@@ -69,13 +69,13 @@ describe("NFT", () => {
   it("Should fail if sender tries to burn token that is not owned", async () => {
     await nft.connect(owner).safeMint(addr1.address, 1, "abc");
     await expect(nft.connect(owner).burn(1)).to.be.revertedWith(
-      "ERC721: You don't own this token for burning"
+      "ERC721Burnable: caller is not owner nor approved"
     );
   });
 
   it("Should fail if sender tries to burn token that does not exist", async () => {
     await expect(nft.connect(owner).burn(1)).to.be.revertedWith(
-      "ERC721: Token does not exist"
+      "ERC721: invalid token ID"
     );
   });
 
@@ -83,7 +83,7 @@ describe("NFT", () => {
     await nft.connect(owner).safeMint(addr1.address, 1, "abc");
     await nft.connect(addr1).burn(1);
     await expect(nft.connect(addr1).burn(1)).to.be.revertedWith(
-      "ERC721: Token does not exist"
+      "ERC721: invalid token ID"
     );
   });
 });
