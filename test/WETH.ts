@@ -2,14 +2,15 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { WETH } from "../typechain";
 import { expect } from "chai";
 import { ethers } from "hardhat";
+import { parseEther } from "ethers/lib/utils";
 
 describe("WETH", () => {
-  let weth: WETH, owner: SignerWithAddress;
+  let weth: WETH, owner: SignerWithAddress, addr1: SignerWithAddress;
 
   beforeEach(async () => {
-    [owner] = await ethers.getSigners();
+    [owner, addr1] = await ethers.getSigners();
     const WETH = await ethers.getContractFactory("WETH");
-    weth = await WETH.deploy();
+    weth = await WETH.connect(owner).deploy();
     await weth.deployed();
   });
 
@@ -23,12 +24,12 @@ describe("WETH", () => {
   });
 
   it("Mint some WETH token with locking", async () => {
-    await weth.mint({
-      value: (10 ** 18).toString(),
+    await weth.connect(owner).approve(addr1.address, 10);
+    await weth.connect(addr1).mint({
+      value: 10,
     });
-    console.log(
-      ethers.utils.parseEther((await weth.balanceOf(owner.address)).toString())
-    );
-    expect(1000).to.equal(1000);
+    expect(
+      parseFloat((await weth.balanceOf(addr1.address)).toString())
+    ).to.equal(10);
   });
 });

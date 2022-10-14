@@ -6,8 +6,15 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 contract WETH is ERC20 {
     constructor() ERC20("Wrapped Ether", "WETH") {}
 
+    fallback() external payable {
+        this.mint();
+    }
+
+    receive() external payable {
+        this.mint();
+    }
+
     function mint() external payable {
-        transferFrom(msg.sender, address(this), msg.value);
         _mint(msg.sender, msg.value);
     }
 
