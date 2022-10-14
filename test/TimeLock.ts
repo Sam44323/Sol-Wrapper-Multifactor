@@ -54,8 +54,7 @@ describe("TimeLock", () => {
       "0x",
       (await ethers.provider.getBlock("latest")).timestamp + 100
     );
-    const receipt = await tx.wait();
-    const event = receipt.events?.find((e) => e.event === "Queue");
+    const event = (await tx.wait()).events?.find((e) => e.event === "Queue");
 
     expect(await timeLock.connect(owner).cancel(event?.args!["txId"])).to.emit(
       timeLock,
