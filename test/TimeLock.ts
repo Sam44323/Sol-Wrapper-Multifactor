@@ -33,4 +33,33 @@ describe("TimeLock", () => {
       "caller needs to be a timelock contract"
     );
   });
+
+  it("Creating a transaction queue", async () => {
+    expect(
+      await timeLock.queue(
+        timelockTester.address,
+        0,
+        "testCaller()",
+        "0x",
+        (await ethers.provider.getBlock("latest")).timestamp + 100
+      )
+    ).to.emit(timeLock, "Queue");
+  });
+
+  it("Check the existence of the transactionId", async () => {
+    const tx = await timeLock.queue(
+      timelockTester.address,
+      0,
+      "testCaller()",
+      "0x",
+      (await ethers.provider.getBlock("latest")).timestamp + 100
+    );
+    const receipt = await tx.wait();
+    const event = receipt.events?.find((e) => e.event === "Queue");
+
+    expect(await timeLock.connect(owner).cancel(event?.args!["txId"])).to.emit(
+      timeLock,
+      "Cancel"
+    );
+  });
 });
