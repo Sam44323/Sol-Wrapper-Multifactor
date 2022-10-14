@@ -113,7 +113,7 @@ contract TimeLock is Ownable {
         bytes memory data;
         if (bytes(_func).length > 0) {
             // data = func selector + _data
-            data = abi.encodePacked(bytes4(keccak256(bytes(_func))), _data);
+            data = abi.encodePacked(bytes4(keccak256(bytes(_func))), _data); // appending the data to the function (first 4-bytes selector) for execution
         } else {
             // call fallback with data
             data = _data;
