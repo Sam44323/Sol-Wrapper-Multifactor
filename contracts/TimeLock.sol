@@ -17,6 +17,9 @@ contract TimeLock is Ownable {
 
     // custom errors
     error TimestampNotInRangeError(uint blockTimestamp, uint timestamp);
+    error TimestampNotPassedError(uint blockTimestmap, uint timestamp);
+    error TimestampExpiredError(uint blockTimestamp, uint expiresAt);
+    error TxFailedError();
 
     event Queue(
         bytes32 indexed txId,
@@ -39,6 +42,8 @@ contract TimeLock is Ownable {
     constructor() {
         _owner = msg.sender;
     }
+
+    receive() external payable {}
 
     function computeTxId(
         address _target,
@@ -82,7 +87,46 @@ contract TimeLock is Ownable {
         emit Queue(txId, _target, _value, _func, _data, _timestamp);
     }
 
-    function execute() external {}
+    function execute(
+        address _target,
+        uint _value,
+        string calldata _func,
+        bytes calldata _data,
+        uint _timestamp
+    ) external payable onlyOwner returns (bytes memory) {
+        bytes32 txId = computeTxId(_target, _value, _func, _data, _timestamp);
+        require(_queuedTransactions[txId], "TimeLock: transaction not queued");
+
+        if (block.timestamp < _timestamp) {
+            revert TimestampNotPassedError(block.timestamp, _timestamp);
+        }
+        if (block.timestamp > _timestamp + GRACE_PERIOD) {
+            revert TimestampExpiredError(
+                block.timestamp,
+                _timestamp + GRACE_PERIOD
+            );
+        }
+
+        // prepare data
+        bytes memory data;
+        if (bytes(_func).length > 0) {
+            // data = func selector + _data
+            data = abi.encodePacked(bytes4(keccak256(bytes(_func))), _data);
+        } else {
+            // call fallback with data
+            data = _data;
+        }
+
+        // call target
+        (bool ok, bytes memory res) = _target.call{value: _value}(data);
+        if (!ok) {
+            revert TxFailedError();
+        }
+
+        emit Execute(txId, _target, _value, _func, _data, _timestamp);
+
+        return res;
+    }
 }
 
 contract TimeLockTargetCaller {
