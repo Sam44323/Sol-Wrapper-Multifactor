@@ -67,4 +67,30 @@ describe("TimeLock", () => {
       timeLock.connect(owner).cancel(ethers.utils.formatBytes32String("test"))
     ).to.be.revertedWith("TimeLock: transaction not queued");
   });
+
+  it("Should execute a queued transaction", async () => {
+    const txTimestamp = (await ethers.provider.getBlock("latest")).timestamp;
+    await timeLock.queue(
+      timelockTester.address,
+      0,
+      "testCaller()",
+      "0x",
+      txTimestamp + 100
+    );
+
+    await ethers.provider.send("evm_increaseTime", [100]);
+    await ethers.provider.send("evm_mine", []);
+
+    expect(
+      await timeLock
+        .connect(owner)
+        .execute(
+          timelockTester.address,
+          0,
+          "testCaller()",
+          "0x",
+          txTimestamp + 100
+        )
+    ).to.emit(timeLock, "Execute");
+  });
 });
