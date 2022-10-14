@@ -93,4 +93,53 @@ describe("TimeLock", () => {
         )
     ).to.emit(timeLock, "Execute");
   });
+
+  it("Should return an error of TimestampNotPassedError", async () => {
+    const txTimestamp = (await ethers.provider.getBlock("latest")).timestamp;
+    await timeLock.queue(
+      timelockTester.address,
+      0,
+      "testCaller()",
+      "0x",
+      txTimestamp + 100
+    );
+
+    await expect(
+      timeLock
+        .connect(owner)
+        .execute(
+          timelockTester.address,
+          0,
+          "testCaller()",
+          "0x",
+          txTimestamp + 100
+        )
+    ).to.be.revertedWithCustomError(timeLock, "TimestampNotPassedError");
+  });
+
+  it("Should return an error of TimestampExpiredError", async () => {
+    const txTimestamp = (await ethers.provider.getBlock("latest")).timestamp;
+    await timeLock.queue(
+      timelockTester.address,
+      0,
+      "testCaller()",
+      "0x",
+      txTimestamp + 100
+    );
+
+    await ethers.provider.send("evm_increaseTime", [1500]);
+    await ethers.provider.send("evm_mine", []);
+
+    await expect(
+      timeLock
+        .connect(owner)
+        .execute(
+          timelockTester.address,
+          0,
+          "testCaller()",
+          "0x",
+          txTimestamp + 100
+        )
+    ).to.be.revertedWithCustomError(timeLock, "TimestampExpiredError");
+  });
 });
