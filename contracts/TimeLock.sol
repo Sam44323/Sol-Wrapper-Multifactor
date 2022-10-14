@@ -2,13 +2,31 @@
 pragma solidity ^0.8.9;
 
 /*
-* @description: TimeLock is a contract that publishes a transaction to be executed in the future. After a mimimum waiting period, the transaction can be executed.
-*/
+ * @description: TimeLock is a contract that publishes a transaction to be executed in the future. After a mimimum waiting period, the transaction can be executed.
+ */
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract TimeLock is Ownable {
     address private _owner;
+
+    event Queue(
+        bytes32 indexed txId,
+        address indexed target,
+        uint value,
+        string func,
+        bytes data,
+        uint timestamp
+    );
+
+    event Execute(
+        bytes32 indexed txId,
+        address indexed target,
+        uint value,
+        string func,
+        bytes data,
+        uint timestamp
+    );
 
     constructor() {
         _owner = msg.sender;
@@ -27,11 +45,9 @@ contract TimeLock is Ownable {
          * @Step3: check if the timestamp is in the future
          * @Step4: queue the transaction
          */
-      }
-
-    function execute() external {
-
     }
+
+    function execute() external {}
 }
 
 contract TimeLockTargetCaller {
