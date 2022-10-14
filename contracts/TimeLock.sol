@@ -9,6 +9,11 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract TimeLock is Ownable {
     address private _owner;
+    mapping(bytes32 => bool) private _queuedTransactions;
+
+    uint public constant MIN_DELAY = 10; // seconds
+    uint public constant MAX_DELAY = 1000; // seconds
+    uint public constant GRACE_PERIOD = 1000; // seconds
 
     event Queue(
         bytes32 indexed txId,
@@ -44,17 +49,30 @@ contract TimeLock is Ownable {
 
     function queue(
         address _target,
-        uint value,
+        uint _value,
         string calldata _func,
         bytes calldata _data,
         uint _timestamp
     ) external onlyOwner {
         /**
-         * @Step1: create a tx id
+         * @Step1: create a tx id using the target, value, function, data, and timestamp
          * @Step2: check if the tx id is in the queue i.e. unique
          * @Step3: check if the timestamp is in the future
          * @Step4: queue the transaction
          */
+        bytes32 txId = computeTxId(_target, _value, _func, _data, _timestamp);
+        require(
+            !_queuedTransactions[txId],
+            "TimeLock: transaction already queued"
+        );
+        // ---|------------|---------------|-------
+        //  block    block + min     block + max
+        //  number    wait time      wait time
+        reqiure(
+            _timestamp >= block.timestamp + MIN_DELAY &&
+                _timestamp <= block.timestamp + MAX_DELAY,
+            "TimeLock: timestamp out of range"
+        );
     }
 
     function execute() external {}
