@@ -74,9 +74,9 @@ contract TimeLock is Ownable {
             !_queuedTransactions[txId],
             "TimeLock: transaction already queued"
         );
-        // ---|------------|---------------|-------
-        //  block    block + min     block + max
-        //  number    wait time      wait time
+        // ---|------------|-------------------------------------------------------|-------
+        //  block    block + min  <-------period for execution--------->     block + max
+        //  number    wait time                                               wait time
         if (
             _timestamp < block.timestamp + MIN_DELAY ||
             _timestamp > block.timestamp + MAX_DELAY
