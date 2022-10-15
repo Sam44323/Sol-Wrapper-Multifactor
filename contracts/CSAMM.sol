@@ -10,7 +10,7 @@ contract CSAMM {
     uint public reserve0; // reseve value for token0
     uint public reserve1; // reseve value for token1
 
-    uint public totalSupply; // value for the total-supply of shares
+    uint public totalSupply; // value for the total supply of shares
     mapping(address => uint) public balanceOf; // share balance of each liquidity-providers
 
     constructor(address _token0, address _token1) {
