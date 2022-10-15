@@ -13,4 +13,25 @@ contract CPAMM {
         token0 = IERC20(_token0);
         token1 = IERC20(_token1);
     }
+
+    function _mint(address _to, uint _amount) private {}
+
+    function _burn(address _from, uint _amount) private {}
+
+    function _update(uint _amount0, uint _amount1) private {}
+
+    function swap(address _tokenIn, address _tokenOut)
+        external
+        returns (uint amountOut)
+    {}
+
+    function addLiquidity(uint _amount0, uint _amount1)
+        external
+        returns (uint _shares)
+    {}
+
+    function removeLiquidity(uint _shares)
+        external
+        returns (uint _amount0, uint _amount1)
+    {}
 }
