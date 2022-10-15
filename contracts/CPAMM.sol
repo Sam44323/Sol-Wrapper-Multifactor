@@ -4,11 +4,11 @@ pragma solidity ^0.8.9;
 import "./utils/IERC20.sol";
 
 contract CPAMM {
-    IERC20 public immutable token0;
-    IERC20 public immutable token1;
+    IERC20 public immutable token0; // address for token0
+    IERC20 public immutable token1; // address for token1
 
-    uint public reserve0;
-    uint public reserve1;
+    uint public reserve0; // reseve value for token0
+    uint public reserve1; // reseve value for token1
 
     uint public totalSupply;
     mapping(address => uint) public balanceOf;
