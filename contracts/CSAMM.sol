@@ -30,7 +30,10 @@ contract CSAMM {
         totalSupply -= _amount;
     }
 
-    function _update(uint _amount0, uint _amount1) private {}
+    function _update(uint _amount0, uint _amount1) private {
+        reserve0 = _amount0;
+        reserve1 = _amount1;
+    }
 
     function swap(address _tokenIn, uint _amountIn)
         external
