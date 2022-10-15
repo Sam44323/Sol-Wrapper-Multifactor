@@ -10,7 +10,7 @@ contract CSAMM {
     uint public reserve0; // reseve value for token0
     uint public reserve1; // reseve value for token1
 
-    uint public totalSupply;
+    uint public totalSupply; // value for the total-supply of shares
     mapping(address => uint) public balanceOf; // share balance of each liquidity-providers
 
     constructor(address _token0, address _token1) {
@@ -20,9 +20,15 @@ contract CSAMM {
         token1 = IERC20(_token1);
     }
 
-    function _mint(address _to, uint _amount) private {}
+    function _mint(address _to, uint _amount) private {
+        totalSupply += _amount;
+        balanceOf[_to] += _amount;
+    }
 
-    function _burn(address _from, uint _amount) private {}
+    function _burn(address _from, uint _amount) private {
+        totalSupply -= _amount;
+        balanceOf[_from] -= _amount;
+    }
 
     function _update(uint _amount0, uint _amount1) private {}
 
