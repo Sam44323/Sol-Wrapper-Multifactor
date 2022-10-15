@@ -32,10 +32,45 @@ contract CSAMM {
 
     function _update(uint _amount0, uint _amount1) private {}
 
-    function swap(address _tokenIn, address _tokenOut)
+    function swap(address _tokenIn, uint _amountIn)
         external
         returns (uint amountOut)
-    {}
+    {
+        require(
+            _tokenIn == address(token0) || _tokenIn == address(token1),
+            "Invalid tokenIn"
+        );
+        /**
+         * TODO: Implement the swap function
+         * 1. Check if _tokenIn is token0 or token1
+         * 2. Calculate the amountOut
+         * 3. Transfer the tokenIn to this contract
+         * 4. Transfer the tokenOut from this contract
+         * 5. Update the reserve0 and reserve1
+         * 6. Return the amountOut
+         */
+
+        // 1. Check if _tokenIn is token0 or token1
+        bool isToken0 = _tokenIn == address(token0);
+        (IERC20 tokenIn, IERC20 tokenOut, uint resIn, uint resOut) = isToken0
+            ? (token0, token1, reserve0, reserve1)
+            : (token1, token0, reserve1, reserve0);
+
+        // 2. Calculate the amountIn
+        _amountIn = tokenIn.balanceOf(address(this)) - resIn;
+
+        //0.03% fee
+        // this-means amount out will be 99.7% of what amount came in
+        // as we are taking 0.3% as fee
+        amountOut = (_amountIn * 997) / 1000;
+
+        (uint res0, uint res1) = isToken0
+            ? (resIn + _amountIn, resOut - amountOut)
+            : (resOut - amountOut, resIn + _amountIn);
+
+        _update(res0, res1);
+        tokenOut.transfer(msg.sender, amountOut);
+    }
 
     function addLiquidity(uint _amount0, uint _amount1)
         external
