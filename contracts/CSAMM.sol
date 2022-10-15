@@ -21,13 +21,13 @@ contract CSAMM {
     }
 
     function _mint(address _to, uint _amount) private {
-        totalSupply += _amount;
         balanceOf[_to] += _amount;
+        totalSupply += _amount;
     }
 
     function _burn(address _from, uint _amount) private {
-        totalSupply -= _amount;
         balanceOf[_from] -= _amount;
+        totalSupply -= _amount;
     }
 
     function _update(uint _amount0, uint _amount1) private {}
