@@ -29,4 +29,18 @@ describe("Vault", () => {
     await vault.connect(addr1).deposit(1000);
     expect(await vault.totalSupply()).to.equal(1000);
   });
+
+  it("Should revert with an error if deposit amount is 0", async () => {
+    await chainToken.connect(addr1).mint(1000);
+    await chainToken.connect(addr1).approve(vault.address, 1000);
+    await expect(vault.connect(addr1).deposit(0)).to.be.revertedWith(
+      "Amount must be greater than 0"
+    );
+  });
+
+  it("Should revert if withdraw shares is 0 or doesnt exist", async () => {
+    await expect(vault.connect(addr1).withdraw(100)).to.be.revertedWith(
+      "Not enough shares"
+    );
+  });
 });
