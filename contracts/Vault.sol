@@ -33,6 +33,7 @@ contract Vault {
 
         s = aT / B
         */
+        require(_amount > 0, "Amount must be greater than 0");
         uint shares;
         if (totalSupply == 0) {
             shares = _amount;
@@ -55,6 +56,7 @@ contract Vault {
 
         a = sB / T
         */
+        require(balanceOf[msg.sender] >= _shares, "Not enough shares");
         uint amount = (_shares * token.balanceOf(address(this))) / totalSupply;
         _burn(msg.sender, _shares);
         token.transfer(msg.sender, amount);
