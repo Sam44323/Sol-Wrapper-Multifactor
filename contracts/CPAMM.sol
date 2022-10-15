@@ -11,7 +11,7 @@ contract CPAMM {
     uint public reserve1; // reseve value for token1
 
     uint public totalSupply;
-    mapping(address => uint) public balanceOf;
+    mapping(address => uint) public balanceOf; // share balance of each liquidity-providers
 
     constructor(address _token0, address _token1) {
         // NOTE: This contract assumes that
