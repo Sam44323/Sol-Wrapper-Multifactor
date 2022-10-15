@@ -43,4 +43,13 @@ describe("Vault", () => {
       "Not enough shares"
     );
   });
+
+  it("Withdraw amount should be more than deposit", async () => {
+    await chainToken.connect(addr1).mint(2000);
+    await chainToken.connect(addr1).approve(vault.address, 2000);
+    await vault.connect(addr1).deposit(1000);
+    await chainToken.connect(addr1).transfer(vault.address, 1000);
+    await vault.connect(addr1).withdraw(1000);
+    expect(await chainToken.balanceOf(addr1.address)).to.be.eq(2000);
+  });
 });
