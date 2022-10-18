@@ -20,20 +20,36 @@ contract CSAMM {
         token1 = IERC20(_token1);
     }
 
+    /*
+     * @description: utils function for minting shares for the liquidity-provider
+     */
+
     function _mint(address _to, uint _amount) private {
         balanceOf[_to] += _amount;
         totalSupply += _amount;
     }
+
+    /*
+     * @description: utils function for burning shares for the liquidity-provider
+     */
 
     function _burn(address _from, uint _amount) private {
         balanceOf[_from] -= _amount;
         totalSupply -= _amount;
     }
 
+    /*
+     * @description: utils function for updating the shares and the total_supply of the liquidity
+     */
+
     function _update(uint _amount0, uint _amount1) private {
         reserve0 = _amount0;
         reserve1 = _amount1;
     }
+
+    /*
+     * @description: utils function for swapping tokenIn <> tokenOut in the liquidity
+     */
 
     function swap(address _tokenIn, uint _amountIn)
         external
@@ -75,10 +91,18 @@ contract CSAMM {
         tokenOut.transfer(msg.sender, amountOut);
     }
 
+    /*
+     * @description: utils function for adding liquidity to the pool
+     */
+
     function addLiquidity(uint _amount0, uint _amount1)
         external
         returns (uint _shares)
     {}
+
+    /*
+     * @description: utils function for removing liquidity to the pool
+     */
 
     function removeLiquidity(uint _shares)
         external
