@@ -156,7 +156,6 @@ contract CSAMM {
 
         if (d0 > 0) {
             token0.transfer(msg.sender, d0);
-        }
         if (d1 > 0) {
             token1.transfer(msg.sender, d1);
         }
