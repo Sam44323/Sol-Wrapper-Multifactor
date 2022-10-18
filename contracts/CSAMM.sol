@@ -97,15 +97,70 @@ contract CSAMM {
 
     function addLiquidity(uint _amount0, uint _amount1)
         external
-        returns (uint _shares)
-    {}
+        returns (uint shares)
+    {
+        //transferring the LP tokens from the sender to the pool
+        token0.transferFrom(msg.sender, address(this), _amount0);
+        token1.transferFrom(msg.sender, address(this), _amount1);
+
+        uint bal0 = token0.balanceOf(address(this));
+        uint bal1 = token1.balanceOf(address(this));
+
+        // calculating the difference in balances
+        uint d0 = bal0 - reserve0;
+        uint d1 = bal1 - reserve1;
+
+        /*
+        a = amount in
+        L = total liquidity
+        s = shares to mint
+        T = total supply
+
+        s should be proportional to increase from L to L + a
+        (L + a) / L = (T + s) / T
+
+        s = a * T / L
+        */
+        if (totalSupply > 0) {
+            shares = ((d0 + d1) * totalSupply) / (reserve0 + reserve1); // calculating the LP-shares to be minted
+        } else {
+            shares = d0 + d1;
+        }
+
+        require(shares > 0, "shares = 0");
+        _mint(msg.sender, shares);
+        _update(bal0, bal1);
+    }
 
     /*
      * @description: utils function for removing liquidity to the pool
      */
 
-    function removeLiquidity(uint _shares)
-        external
-        returns (uint _amount0, uint _amount1)
-    {}
+    function removeLiquidity(uint _shares) external returns (uint d0, uint d1) {
+        /*
+        a = amount out
+        L = total liquidity
+        s = shares
+        T = total supply
+
+        a / L = s / T
+
+        a = L * s / T
+          = (reserve0 + reserve1) * s / T
+        */
+        d0 = (reserve0 * _shares) / totalSupply;
+        d1 = (reserve1 * _shares) / totalSupply;
+
+        _burn(msg.sender, _shares);
+        _update(reserve0 - d0, reserve1 - d1);
+
+        if (d0 > 0) {
+            token0.transfer(msg.sender, d0);
+        }
+        if (d1 > 0) {
+            token1.transfer(msg.sender, d1);
+        }
+
+        return (d0, d1);
+    }
 }
