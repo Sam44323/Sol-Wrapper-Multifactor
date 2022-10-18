@@ -53,4 +53,29 @@ describe("CSAMM", () => {
     await csamm.connect(addr1).addLiquidity(100, 100);
     expect(await csamm.balanceOf(addr1.address)).to.equal(200);
   });
+
+  it("Check liquidity removal data", async () => {
+    await token0.connect(addr1).mint({
+      value: 100,
+    });
+
+    await token1.connect(addr1).mint({
+      value: 100,
+    });
+
+    await token0.connect(addr1).approve(csamm.address, 100);
+    await token1.connect(addr1).approve(csamm.address, 100);
+
+    await csamm.connect(addr1).addLiquidity(100, 100);
+    expect(await csamm.balanceOf(addr1.address)).to.equal(200);
+    const tx = await csamm.removeLiquidity(200);
+    const event = (await tx.wait()).events?.find(
+      (e) => e.event === "RemoveLiquidity"
+    );
+    const shares = await csamm.balanceOf(addr1.address);
+    console.log(shares);
+    expect(event?.args![1]).to.equal(100);
+    expect(event?.args![2]).to.equal(100);
+    expect(shares).to.equal(0);
+  });
 });

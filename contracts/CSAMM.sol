@@ -13,6 +13,9 @@ contract CSAMM {
     uint public totalSupply; // value for the total supply of shares
     mapping(address => uint) public balanceOf; // share balance of each liquidity-providers
 
+    // events for the contracts
+    event RemoveLiquidity(address indexed provider, uint amount0, uint amount1);
+
     constructor(address _token0, address _token1) {
         // NOTE: This contract assumes that
         // token0 and token1 both have same decimals
@@ -151,5 +154,7 @@ contract CSAMM {
         if (d1 > 0) {
             token1.transfer(msg.sender, d1);
         }
+
+        emit RemoveLiquidity(msg.sender, d0, d1);
     }
 }
