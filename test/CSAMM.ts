@@ -7,7 +7,8 @@ describe("CSAMM", () => {
   let csamm: CSAMM, token0: Token0, token1: Token1, addr1: SignerWithAddress;
 
   beforeEach(async () => {
-    const [addr1] = await ethers.getSigners();
+    const signer = await ethers.getSigners();
+    addr1 = signer[0];
 
     const Token0 = await ethers.getContractFactory("Token0");
     token0 = await Token0.deploy();
@@ -35,5 +36,21 @@ describe("CSAMM", () => {
     expect(reserve0).to.equal(0);
     expect(reserve1).to.equal(0);
     expect(totalSupply).to.equal(0);
+  });
+
+  it("Mint shares for the providers", async () => {
+    await token0.connect(addr1).mint({
+      value: 100,
+    });
+
+    await token1.connect(addr1).mint({
+      value: 100,
+    });
+
+    await token0.connect(addr1).approve(csamm.address, 100);
+    await token1.connect(addr1).approve(csamm.address, 100);
+
+    await csamm.connect(addr1).addLiquidity(100, 100);
+    expect(await csamm.balanceOf(addr1.address)).to.equal(200);
   });
 });
