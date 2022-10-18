@@ -22,4 +22,19 @@ describe("CSAMM", () => {
     csamm = await CSAMM.deploy(token0.address, token1.address);
     await csamm.deployed();
   });
+
+  it("Check the address of the LP tokens", async () => {
+    expect(await csamm.token0()).to.equal(token0.address);
+    expect(await csamm.token1()).to.equal(token1.address);
+  });
+
+  it("Start with zero reserves", async () => {
+    const reserve0 = await csamm.reserve0();
+    const reserve1 = await csamm.reserve1();
+    const totalSupply = await csamm.totalSupply();
+
+    expect(reserve0).to.equal(0);
+    expect(reserve1).to.equal(0);
+    expect(totalSupply).to.equal(0);
+  });
 });
