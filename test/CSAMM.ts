@@ -7,8 +7,7 @@ describe("CSAMM", () => {
   let csamm: CSAMM, token0: Token0, token1: Token1, addr1: SignerWithAddress;
 
   beforeEach(async () => {
-    const signers = await ethers.getSigners();
-    addr1 = signers[1];
+    const [addr1] = await ethers.getSigners();
 
     const Token0 = await ethers.getContractFactory("Token0");
     token0 = await Token0.deploy();
