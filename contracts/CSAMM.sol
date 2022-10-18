@@ -91,22 +91,16 @@ contract CSAMM {
         tokenOut.transfer(msg.sender, amountOut);
     }
 
-    /*
-     * @description: utils function for adding liquidity to the pool
-     */
-
     function addLiquidity(uint _amount0, uint _amount1)
         external
         returns (uint shares)
     {
-        //transferring the LP tokens from the sender to the pool
         token0.transferFrom(msg.sender, address(this), _amount0);
         token1.transferFrom(msg.sender, address(this), _amount1);
 
         uint bal0 = token0.balanceOf(address(this));
         uint bal1 = token1.balanceOf(address(this));
 
-        // calculating the difference in balances
         uint d0 = bal0 - reserve0;
         uint d1 = bal1 - reserve1;
 
@@ -122,19 +116,16 @@ contract CSAMM {
         s = a * T / L
         */
         if (totalSupply > 0) {
-            shares = ((d0 + d1) * totalSupply) / (reserve0 + reserve1); // calculating the LP-shares to be minted
+            shares = ((d0 + d1) * totalSupply) / (reserve0 + reserve1);
         } else {
             shares = d0 + d1;
         }
 
         require(shares > 0, "shares = 0");
         _mint(msg.sender, shares);
+
         _update(bal0, bal1);
     }
-
-    /*
-     * @description: utils function for removing liquidity to the pool
-     */
 
     function removeLiquidity(uint _shares) external returns (uint d0, uint d1) {
         /*
@@ -148,20 +139,17 @@ contract CSAMM {
         a = L * s / T
           = (reserve0 + reserve1) * s / T
         */
-
-       //checking the differenc in reserves for the withdrawal of tokens based on shares
         d0 = (reserve0 * _shares) / totalSupply;
         d1 = (reserve1 * _shares) / totalSupply;
 
-        _burn(msg.sender, _shares); // burning the shares for the sender
-        _update(reserve0 - d0, reserve1 - d1);// updating the shares for the pool based on the shares sent by sender
+        _burn(msg.sender, _shares);
+        _update(reserve0 - d0, reserve1 - d1);
 
         if (d0 > 0) {
-            token0.transfer(msg.sender, d0); // transferring the balances for the token0 (if updated)
-        if (d1 > 0) {
-            token1.transfer(msg.sender, d1); // transferring the balances for the token1 (if updated)
+            token0.transfer(msg.sender, d0);
         }
-
-        return (d0, d1); // returning the balances
+        if (d1 > 0) {
+            token1.transfer(msg.sender, d1);
+        }
     }
 }
